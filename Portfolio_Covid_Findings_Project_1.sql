@@ -24,13 +24,11 @@ Select location, date, total_cases, total_deaths, CAST(total_deaths AS FLOAT) / 
 From PortfolioProject..[CovidDeaths]
 Order by 1,2
 
-
 -- Displays the liklihood of dying within the USA if you contracted covid.
 Select location, date, total_cases, total_deaths, CAST(total_deaths AS FLOAT) / NULLIF(total_cases, 0) * 100 AS DeathPercentage
 From PortfolioProject..[CovidDeaths]
 Where location like '%states%'
 Order by 1,2
-
 
 -- Looking at Total Cases vs Population
 -- Shows what percentage of population got Covid
@@ -38,7 +36,6 @@ Select location, date, total_cases, population, CAST(total_cases AS FLOAT) / NUL
 From PortfolioProject..[CovidDeaths]
 Where location like '%states%'
 Order by 1,2
-
 
 -- MAX(total_cases): Finds the highest case count ever recorded for each country.
 -- GROUP BY location: Groups the results by country.
@@ -89,7 +86,6 @@ MaxCasesWithYear AS (
         continent IS NOT NULL
         AND YEAR(cd.date) BETWEEN 2020 AND 2022
 )
-
 -- This query is showing the location (country or region) 
 -- and the year when that location had its highest number of total COVID cases
 SELECT 
@@ -102,8 +98,6 @@ WHERE
     rn = 1
 ORDER BY 
     total_cases DESC;
- 
-
 
 -- This query below finds the highest number of reported COVID-19 cases (total_cases) 
 -- and the highest percentage of the population infected for each location.
@@ -129,8 +123,7 @@ GROUP BY
     Location, 
     Population
 ORDER BY 
-    Location, Population;
-  
+    Location, Population;  
 
 -- This will show countries with the Highest death count per population.
 -- This query retrieves the highest reported death count for each country, formatted with commas for readability.
@@ -292,8 +285,11 @@ SELECT *, (CAST(AccruingPeopleVaccinated AS FLOAT)) / NULLIF(Population, 0) * 10
 FROM PopvsVACC
 ORDER BY Location, Date;
 
-
--- Creating View to store data for later Visualizations
+-- Creating View to store data for later Visualizations.
+-- Create a view that tracks COVID-19 vaccination progress by location and date.
+-- Includes total population, new vaccinations per day, running total of vaccinations,
+-- and median age of the population.
+-- Filters out rows with missing continent, null vaccinations, or zero vaccinations.
 Create View Population_Vaccinated as
 SELECT  
     dea.continent, 
@@ -314,6 +310,5 @@ JOIN PortfolioProject..[CovidPatients] pat
     AND vac.new_vaccinations IS NOT NULL
     AND vac.new_vaccinations <> 0
 --ORDER BY 1, 2, 3;
-
 
 --END OF LINE.
